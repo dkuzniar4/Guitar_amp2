@@ -40,30 +40,6 @@ private:
     unsigned int buffIndex = 0;
 };
 
-class Nonlinear
-{
-public:
-    Nonlinear();
-    float processing(float input);
-
-    void init(float(*characteristic)[2U], unsigned int set_size);
-    void setAmpli(float ampli);
-    void setBias(float bias);
-    float getBias(void);
-    float getAmpli(void);
-
-    unsigned int size;
-    float amp;
-    float bias;
-
-    float step;
-    float gain_tab[100];
-    float norm;
-
-    float Input_min;
-    float Input_max;
-};
-
 class Saturator
 {
 public:

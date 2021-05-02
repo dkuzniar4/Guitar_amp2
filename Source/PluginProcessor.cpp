@@ -181,7 +181,6 @@ void Guitar_ampAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
                 signal_treble = treble_filter.processing(signal, IN_treble, OUT_treble);
                 signal = signal_bass + signal_mid + signal_treble;
 
-                //signal = tube.processing(signal);
                 signal = sat.processing(signal);
             }
 
