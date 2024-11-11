@@ -21,7 +21,7 @@ namespace BinaryData
     const int            plus_ON_pngSize = 905;
 
     extern const char*   background_png;
-    const int            background_pngSize = 53784;
+    const int            background_pngSize = 56698;
 
     extern const char*   cab_OFF_png;
     const int            cab_OFF_pngSize = 2405;
@@ -35,8 +35,11 @@ namespace BinaryData
     extern const char*   power_ON_png;
     const int            power_ON_pngSize = 2612;
 
+    extern const char*   knobRelease_png;
+    const int            knobRelease_pngSize = 18385;
+
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 9;
+    const int namedResourceListSize = 10;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

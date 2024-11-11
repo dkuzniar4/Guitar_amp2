@@ -53,23 +53,8 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
-
-    // my variables and functions
-    int amp_state = 1;
-    int cab_state = 1;
-
-    float inputVolume = 1.0;
-
-    IIR_filter bass_filter;
-    IIR_filter mid_filter;
-    IIR_filter treble_filter;
-
-    Saturator sat;
-
-    FIR cabinet;
-
-    float masterVolume = 1.0;
-
+    
+    Amp ampSim;
 private:
 
     //==============================================================================
