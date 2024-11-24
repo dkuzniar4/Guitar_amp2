@@ -11,6 +11,10 @@
 
 //==============================================================================
 Guitar_ampAudioProcessor::Guitar_ampAudioProcessor()
+    : parameters(*this, nullptr, juce::Identifier("GuitarAmp"),
+        {
+            //put parameters that require automation here
+        })
 #ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -22,6 +26,18 @@ Guitar_ampAudioProcessor::Guitar_ampAudioProcessor()
                        )
 #endif
 {
+    Input.referTo(parameters.state.getPropertyAsValue("Input", nullptr, true));
+    Master.referTo(parameters.state.getPropertyAsValue("Master", nullptr, true));
+    Bass.referTo(parameters.state.getPropertyAsValue("Bass", nullptr, true));
+    Mid.referTo(parameters.state.getPropertyAsValue("Mid", nullptr, true));
+    Treble.referTo(parameters.state.getPropertyAsValue("Treble", nullptr, true));
+    Thr.referTo(parameters.state.getPropertyAsValue("Thr", nullptr, true));
+    Gain.referTo(parameters.state.getPropertyAsValue("Gain", nullptr, true));
+    Plus.referTo(parameters.state.getPropertyAsValue("Plus", nullptr, true));
+    Minus.referTo(parameters.state.getPropertyAsValue("Minus", nullptr, true));
+    AmpState.referTo(parameters.state.getPropertyAsValue("AmpState", nullptr, true));
+    CabState.referTo(parameters.state.getPropertyAsValue("CabState", nullptr, true));
+
 }
 
 Guitar_ampAudioProcessor::~Guitar_ampAudioProcessor()
@@ -160,12 +176,68 @@ void Guitar_ampAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    auto state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    copyXmlToBinary(*xml, destData);
 }
 
 void Guitar_ampAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+
+    if (xmlState != nullptr && xmlState->hasTagName(parameters.state.getType()))
+    {
+        parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+
+        // Powi¹zanie w³aœciwoœci po przywróceniu drzewa
+        Input.referTo(parameters.state.getPropertyAsValue("Input", nullptr, true));
+        Master.referTo(parameters.state.getPropertyAsValue("Master", nullptr, true));
+        Bass.referTo(parameters.state.getPropertyAsValue("Bass", nullptr, true));
+        Mid.referTo(parameters.state.getPropertyAsValue("Mid", nullptr, true));
+        Treble.referTo(parameters.state.getPropertyAsValue("Treble", nullptr, true));
+        Thr.referTo(parameters.state.getPropertyAsValue("Thr", nullptr, true));
+        Gain.referTo(parameters.state.getPropertyAsValue("Gain", nullptr, true));
+        Plus.referTo(parameters.state.getPropertyAsValue("Plus", nullptr, true));
+        Minus.referTo(parameters.state.getPropertyAsValue("Minus", nullptr, true));
+        AmpState.referTo(parameters.state.getPropertyAsValue("AmpState", nullptr, true));
+        CabState.referTo(parameters.state.getPropertyAsValue("CabState", nullptr, true));
+
+        // Odczytanie œcie¿ki z ValueTree
+        if (Input.toString().isNotEmpty())
+            ampSim.setInputVolume(static_cast<float>(Input.getValue()));
+
+        if (Master.toString().isNotEmpty())
+            ampSim.setMasterVolume(static_cast<float>(Master.getValue()));
+
+        if (Bass.toString().isNotEmpty())
+            ampSim.setBassVolume(static_cast<float>(Bass.getValue()));
+
+        if (Mid.toString().isNotEmpty())
+            ampSim.setMidVolume(static_cast<float>(Mid.getValue()));
+
+        if (Treble.toString().isNotEmpty())
+            ampSim.setTrebleVolume(static_cast<float>(Treble.getValue()));
+
+        if (Thr.toString().isNotEmpty())
+            ampSim.setThreshold(static_cast<float>(Thr.getValue()));
+
+        if (Gain.toString().isNotEmpty())
+            ampSim.setGainAbove(static_cast<float>(Gain.getValue()));
+
+        if (Plus.toString().isNotEmpty())
+            ampSim.setPlus(static_cast<int>(Plus.getValue()));
+
+        if (Minus.toString().isNotEmpty())
+            ampSim.setMinus(static_cast<int>(Minus.getValue()));
+
+        if (AmpState.toString().isNotEmpty())
+            ampSim.setAmpState(static_cast<int>(AmpState.getValue()));
+
+        if (CabState.toString().isNotEmpty())
+            ampSim.setCabState(static_cast<int>(CabState.getValue()));
+    }
 }
 
 //==============================================================================

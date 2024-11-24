@@ -190,6 +190,8 @@ int Saturator::getMinus(void)
 
 Amp::Amp()
 {
+    setInputVolume(1.0);
+    setMasterVolume(1.0);
     bass_filter.setVolume(10.0);
     mid_filter.setVolume(10.0);
     treble_filter.setVolume(10.0);
@@ -198,6 +200,9 @@ Amp::Amp()
     sat.setGainAbove(0.4);
     sat.setPlus(1);
     sat.setMinus(1);
+
+    setAmpState(1);
+    setCabState(1);
 }
 
 float Amp::processing(float input)
